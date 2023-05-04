@@ -8,7 +8,7 @@ from keras.models import Model
 from keras.layers import Input, GRU, Bidirectional
 from keras.layers.core import Dense, Dropout, Activation, Flatten
 from keras.layers.convolutional import Convolution1D, MaxPooling1D
-from keras.layers.merge import Multiply
+from keras.layers import Multiply
 
 def grna_preprocess(lines):
     length = 23
@@ -74,7 +74,7 @@ def main():
     seq_act1 = Activation('relu')(seq_conv1)
     seq_pool1 = MaxPooling1D(2)(seq_act1)
     seq_drop1 = Dropout(0.2)(seq_pool1)
-    gru1 = Bidirectional(GRU(256, kernel_initializer='he_normal', dropout=0.3, recurrent_dropout=0.2), name='gru1')(seq_drop1)
+    gru1 = Bidirectional(GRU(256, kernel_initializer='he_normal', dropout=0.3, recurrent_dropout=0.2,reset_after=False), name='gru1')(seq_drop1)
     seq_dense1 = Dense(256, name='seq_dense1')(gru1)
     seq_act2 = Activation('relu')(seq_dense1)
     seq_drop2 = Dropout(0.3)(seq_act2)
@@ -113,8 +113,8 @@ def main():
     model = Model(inputs=[seq_input, epi_input], outputs=[seq_epi_output])
 
     print("Loading weights for the models")
-    model.load_weights('weights/C_RNNCrispr_weights.h5')
-
+    model.load_weights('D:\DoctoralSharif\RNA\TensorflowCode\C-RNNCrispr\weights\C_RNNCrispr_weights.h5')
+    # model = load_model('my_model.h5', custom_objects={'GRU': GRU(reset_after=True)})
     print("Loading test data")
     x_test, epi_test, y_test = load_data(test_file)
 
